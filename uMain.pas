@@ -3,7 +3,7 @@ unit uMain;
 {
   author: ZuBy
 
-  https://github.com/rzaripov1990/CustomPickersHelper
+  https://github.com/rzaripov1990/FMX.Pickers.Helper
   rzaripov1990@gmail.com
 }
 
