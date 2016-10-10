@@ -1,0 +1,74 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Custom Pickers'
+  ClientHeight = 480
+  ClientWidth = 292
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnClose = FormClose
+  DesignerMasterStyle = 0
+  object btList: TButton
+    Position.X = 8.000000000000000000
+    Position.Y = 8.000000000000000000
+    Size.Width = 113.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    Text = 'Picker List'
+    OnClick = btListClick
+  end
+  object btDate: TButton
+    Position.X = 8.000000000000000000
+    Position.Y = 56.000000000000000000
+    Size.Width = 113.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    Text = 'Picker Date'
+    OnClick = btDateClick
+  end
+  object btTime: TButton
+    Position.X = 8.000000000000000000
+    Position.Y = 104.000000000000000000
+    Size.Width = 113.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    Text = 'Picker Time'
+    OnClick = btTimeClick
+  end
+  object lbListValue: TLabel
+    Anchors = [akLeft, akTop, akRight]
+    Position.X = 128.000000000000000000
+    Position.Y = 8.000000000000000000
+    Size.Width = 157.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object lbDateValue: TLabel
+    Anchors = [akLeft, akTop, akRight]
+    Position.X = 128.000000000000000000
+    Position.Y = 56.000000000000000000
+    Size.Width = 157.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object lbTimeValue: TLabel
+    Anchors = [akLeft, akTop, akRight]
+    Position.X = 128.000000000000000000
+    Position.Y = 104.000000000000000000
+    Size.Width = 157.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object lbDateTimeValue: TLabel
+    Anchors = [akLeft, akTop, akRight]
+    Position.X = 7.000000000000000000
+    Position.Y = 144.000000000000000000
+    Size.Width = 278.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+  end
+end
