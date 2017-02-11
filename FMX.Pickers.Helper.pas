@@ -10,28 +10,22 @@ unit FMX.Pickers.Helper;
 interface
 
 uses
-  System.Types, System.SysUtils,
-  FMX.Types, FMX.Forms, FMX.Controls, FMX.Platform,
-  FMX.Pickers
-{$IFDEF IOS}, FMX.Helpers.IOS{$ENDIF};
+  System.Types, FMX.Controls, FMX.Pickers;
 
 type
   TmyPicker = record
-  private
-    class var FPickerService: IFMXPickerService;
-    class var FPickerList: TCustomListPicker;
-    class var FPickerDate: TCustomDateTimePicker;
-    class var FPickerTime: TCustomDateTimePicker;
   public
-    class procedure ListShow(const aValues: TArray<string>; const aParent: TControl; aEvent: TOnValueChanged;
-      const aIndex: integer = -1); static;
-    class procedure ListFree; static;
+    class function ListShow(const aValues: TArray<string>; const aParent: TControl; aEvent: TOnValueChanged;
+      const aIndex: integer = -1): TCustomListPicker; static;
+    class procedure ListFree(aPickerList: TCustomListPicker); static;
 
-    class procedure DateShow(const aParent: TControl; const aCurrentDate: TDateTime; aEvent: TOnDateChanged); static;
-    class procedure DateFree; static;
+    class function DateShow(const aParent: TControl; const aCurrentDate: TDateTime; aEvent: TOnDateChanged)
+      : TCustomDateTimePicker; static;
+    class procedure DateFree(aPickerDate: TCustomDateTimePicker); static;
 
-    class procedure TimeShow(const aParent: TControl; const aCurrentTime: TDateTime; aEvent: TOnDateChanged); static;
-    class procedure TimeFree; static;
+    class function TimeShow(const aParent: TControl; const aCurrentTime: TDateTime; aEvent: TOnDateChanged)
+      : TCustomDateTimePicker; static;
+    class procedure TimeFree(aPickerTime: TCustomDateTimePicker); static;
   end;
 
 implementation
@@ -39,7 +33,10 @@ implementation
 { TmyPicker }
 
 uses
-  System.UITypes;
+  System.SysUtils, System.UITypes, FMX.Platform, FMX.Types, FMX.Forms;
+
+type
+  PickerException = class(Exception);
 
 function GetParentForm(O: TFmxObject): TForm;
 var
@@ -53,34 +50,46 @@ begin
     Result := P as TForm;
 end;
 
-class procedure TmyPicker.DateShow(const aParent: TControl; const aCurrentDate: TDateTime; aEvent: TOnDateChanged);
+class function TmyPicker.DateShow(const aParent: TControl; const aCurrentDate: TDateTime; aEvent: TOnDateChanged)
+  : TCustomDateTimePicker;
+var
+  FPickerService: IFMXPickerService;
 begin
   if TPlatformServices.Current.SupportsPlatformService(IFMXPickerService, FPickerService) then
   begin
-    FPickerDate := FPickerService.CreateDateTimePicker;
-    FPickerDate.OnDateChanged := aEvent;
-    FPickerDate.Date := aCurrentDate;
-    FPickerDate.MinDate := aCurrentDate;
-    FPickerDate.FirstDayOfWeek := TCalDayOfWeek.dowMonday;
-    FPickerDate.ShowMode := TDatePickerShowMode.Date;
-    FPickerDate.ShowWeekNumbers := true;
-    FPickerDate.Show;
-  end;
+    Result := FPickerService.CreateDateTimePicker;
+    Result.OnDateChanged := aEvent;
+    Result.Date := aCurrentDate;
+    Result.MinDate := aCurrentDate;
+    Result.FirstDayOfWeek := TCalDayOfWeek.dowMonday;
+    Result.ShowMode := TDatePickerShowMode.Date;
+    Result.ShowWeekNumbers := true;
+    Result.Show;
+  end
+  else
+    raise PickerException.Create('Platform not support');
 end;
 
-class procedure TmyPicker.DateFree;
+class procedure TmyPicker.DateFree(aPickerDate: TCustomDateTimePicker);
 begin
-  if Assigned(FPickerDate) then
+  if Assigned(aPickerDate) then
   begin
-    FPickerDate.Parent := nil;
-    FPickerDate.OnDateChanged := nil;
-    FPickerDate.DisposeOf;
+    aPickerDate.Hide;
+    aPickerDate.Parent := nil;
+    aPickerDate.OnDateChanged := nil;
+{$IF defined(ANDROID) or defined(IOS)}
+    aPickerDate.DisposeOf;
+    aPickerDate := nil;
+{$ELSE}
+    FreeAndNil(aPickerDate);
+{$ENDIF}
   end;
 end;
 
-class procedure TmyPicker.ListShow(const aValues: TArray<string>; const aParent: TControl; aEvent: TOnValueChanged;
-  const aIndex: integer = -1);
+class function TmyPicker.ListShow(const aValues: TArray<string>; const aParent: TControl; aEvent: TOnValueChanged;
+  const aIndex: integer = -1): TCustomListPicker;
 var
+  FPickerService: IFMXPickerService;
   i: integer;
 {$IFDEF IOS}
   aWidth: Single;
@@ -88,59 +97,75 @@ var
 {$ENDIF}
 begin
   if aParent = nil then
-    exit;
+    raise PickerException.Create('Parent cannot be empty');
 
   if TPlatformServices.Current.SupportsPlatformService(IFMXPickerService, FPickerService) then
   begin
-    FPickerList := FPickerService.CreateListPicker;
+    Result := FPickerService.CreateListPicker;
 {$IFDEF IOS}
-    if IsPad then
-    begin
-      aForm := GetParentForm(aParent);
-      aWidth := aForm.Width / 3;
-      FPickerList.Parent := nil;
-      FPickerList.AbsoluteTargetRect := RectF((aWidth - aForm.Width) / 2, 0, aForm.Width, aForm.Height);
-    end;
+    aForm := GetParentForm(aParent);
+    aWidth := aForm.Width / 3;
+    Result.Parent := nil;
+    Result.AbsoluteTargetRect := RectF((aWidth - aForm.Width) / 2, 0, aForm.Width, aForm.Height);
 {$ELSE}
-    FPickerList.Parent := aParent;
+    Result.Parent := aParent;
 {$ENDIF}
-    FPickerList.OnValueChanged := aEvent;
+    Result.OnValueChanged := aEvent;
     for i := Low(aValues) to High(aValues) do
-      FPickerList.Values.Add(aValues[i]);
-    FPickerList.ItemIndex := aIndex;
-    FPickerList.Show;
-  end;
+      Result.Values.Add(aValues[i]);
+    Result.ItemIndex := aIndex;
+    Result.Show;
+  end
+  else
+    raise PickerException.Create('Platform not support');
 end;
 
-class procedure TmyPicker.ListFree;
+class procedure TmyPicker.ListFree(aPickerList: TCustomListPicker);
 begin
-  if Assigned(FPickerList) then
+  if Assigned(aPickerList) then
   begin
-    FPickerList.Parent := nil;
-    FPickerList.OnValueChanged := nil;
-    FPickerList.DisposeOf;
+    aPickerList.Hide;
+    aPickerList.Parent := nil;
+    aPickerList.OnValueChanged := nil;
+{$IF defined(ANDROID) or defined(IOS)}
+    aPickerList.DisposeOf;
+    aPickerList := nil;
+{$ELSE}
+    FreeAndNil(aPickerList);
+{$ENDIF}
   end;
 end;
 
-class procedure TmyPicker.TimeShow(const aParent: TControl; const aCurrentTime: TDateTime; aEvent: TOnDateChanged);
+class function TmyPicker.TimeShow(const aParent: TControl; const aCurrentTime: TDateTime; aEvent: TOnDateChanged)
+  : TCustomDateTimePicker;
+var
+  FPickerService: IFMXPickerService;
 begin
   if TPlatformServices.Current.SupportsPlatformService(IFMXPickerService, FPickerService) then
   begin
-    FPickerTime := FPickerService.CreateDateTimePicker;
-    FPickerTime.OnDateChanged := aEvent;
-    FPickerTime.Date := aCurrentTime;
-    FPickerTime.ShowMode := TDatePickerShowMode.Time;
-    FPickerTime.Show;
-  end;
+    Result := FPickerService.CreateDateTimePicker;
+    Result.OnDateChanged := aEvent;
+    Result.Date := aCurrentTime;
+    Result.ShowMode := TDatePickerShowMode.Time;
+    Result.Show;
+  end
+  else
+    raise PickerException.Create('Platform not support');
 end;
 
-class procedure TmyPicker.TimeFree;
+class procedure TmyPicker.TimeFree(aPickerTime: TCustomDateTimePicker);
 begin
-  if Assigned(FPickerTime) then
+  if Assigned(aPickerTime) then
   begin
-    FPickerTime.Parent := nil;
-    FPickerTime.OnDateChanged := nil;
-    FPickerTime.DisposeOf;
+    aPickerTime.Hide;
+    aPickerTime.Parent := nil;
+    aPickerTime.OnDateChanged := nil;
+{$IF defined(ANDROID) or defined(IOS)}
+    aPickerTime.DisposeOf;
+    aPickerTime := nil;
+{$ELSE}
+    FreeAndNil(aPickerTime);
+{$ENDIF}
   end;
 end;
 

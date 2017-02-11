@@ -12,7 +12,7 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Controls.Presentation, FMX.Objects;
+  FMX.Controls.Presentation, FMX.Objects, FMX.Pickers;
 
 type
   TForm1 = class(TForm)
@@ -28,6 +28,11 @@ type
     procedure btDateClick(Sender: TObject);
     procedure btTimeClick(Sender: TObject);
   private
+    FPickerListValues: TArray<string>;
+    FPickerList: TCustomListPicker;
+    FPickerDate: TCustomDateTimePicker;
+    FPickerTime: TCustomDateTimePicker;
+
     { Private declarations }
     procedure PickerListClick(Sender: TObject; const AValueIndex: Integer);
     procedure PickerDateClick(Sender: TObject; const ADateTime: TDateTime);
@@ -38,8 +43,6 @@ type
 
 var
   Form1: TForm1;
-
-  FPickerListValues: TArray<string>;
 
 implementation
 
@@ -55,8 +58,8 @@ begin
   FPickerListValues[1] := 'bbb';
   FPickerListValues[2] := 'ccc';
 
-  TmyPicker.ListFree;
-  TmyPicker.ListShow(FPickerListValues, btList, PickerListClick);
+  TmyPicker.ListFree(FPickerList);
+  FPickerList := TmyPicker.ListShow(FPickerListValues, btList, PickerListClick);
 end;
 
 procedure TForm1.PickerListClick(Sender: TObject; const AValueIndex: Integer);
@@ -66,16 +69,16 @@ end;
 
 procedure TForm1.btDateClick(Sender: TObject);
 begin
-  TmyPicker.DateFree;
-  TmyPicker.DateShow(btDate, StrToDateDef(lbDateValue.Text, now), PickerDateClick);
+  TmyPicker.DateFree(FPickerDate);
+  FPickerDate := TmyPicker.DateShow(btDate, StrToDateDef(lbDateValue.Text, now), PickerDateClick);
 end;
 
 procedure TForm1.PickerDateClick(Sender: TObject; const ADateTime: TDateTime);
 begin
   lbDateValue.Text := DateTimeToStr(ADateTime);
 
-  TmyPicker.TimeFree;
-  TmyPicker.TimeShow(btTime, now, PickerTimeClick);
+  TmyPicker.TimeFree(FPickerTime);
+  FPickerTime := TmyPicker.TimeShow(btTime, now, PickerTimeClick);
 end;
 
 procedure TForm1.btTimeClick(Sender: TObject);
@@ -83,8 +86,8 @@ var
   aDate: TDateTime;
 begin
   aDate := StrToDateDef(lbTimeValue.Text, Date);
-  TmyPicker.TimeFree;
-  TmyPicker.TimeShow(btTime, aDate, PickerTimeClick);
+  TmyPicker.TimeFree(FPickerTime);
+  FPickerTime := TmyPicker.TimeShow(btTime, aDate, PickerTimeClick);
 end;
 
 procedure TForm1.PickerTimeClick(Sender: TObject; const ADateTime: TDateTime);
@@ -99,9 +102,10 @@ end;
 
 procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  TmyPicker.ListFree;
-  TmyPicker.TimeFree;
-  TmyPicker.DateFree;
+  Setlength(FPickerListValues, 0);
+  TmyPicker.ListFree(FPickerList);
+  TmyPicker.TimeFree(FPickerTime);
+  TmyPicker.DateFree(FPickerDate);
 end;
 
 initialization
