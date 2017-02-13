@@ -1,6 +1,13 @@
 # FMX.Pickers.Helper
 ###### Platforms - Android/IOS/Windows/MACOS
 
+```
+var
+  FPickerList: TCustomListPicker;
+  FPickerDate: TCustomDateTimePicker;
+  FPickerTime: TCustomDateTimePicker;
+```
+
 Native List Picker
 ```
   Setlength(FPickerListValues, 3);
@@ -8,18 +15,18 @@ Native List Picker
   FPickerListValues[1] := 'bbb';
   FPickerListValues[2] := 'ccc';
 
-  TmyPicker.ListFree;
-  TmyPicker.ListShow(FPickerListValues, btList, PickerListClick);
+  TmyPicker.ListFree(FPickerList);
+  FPickerList := TmyPicker.ListShow(FPickerListValues, btList, PickerListClick);
 ```
 
 Native Date Picker
 ```
-  TmyPicker.DateFree;
-  TmyPicker.DateShow(btDate, StrToDateDef(lbDateValue.Text, now), PickerDateClick);
+  TmyPicker.DateFree(FPickerDate);
+  FPickerDate := TmyPicker.DateShow(btDate, StrToDateDef(lbDateValue.Text, now), PickerDateClick);
 ```
 
 Native Time Picker
 ```
-  TmyPicker.TimeFree;
-  TmyPicker.TimeShow(btTime, now, PickerTimeClick);
+  TmyPicker.TimeFree(FPickerTime);
+  FPickerTime := TmyPicker.TimeShow(btTime, now, PickerTimeClick);
 ```
