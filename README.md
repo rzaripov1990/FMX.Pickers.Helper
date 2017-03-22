@@ -32,3 +32,4 @@ Native Time Picker
   TmyPicker.TimeFree(FPickerTime);
   FPickerTime := TmyPicker.TimeShow(btTime, now, PickerTimeClick);
 ```
+![Android](/screenshots/photo_2017-03-23_03-28-12.jpg?raw=true)
