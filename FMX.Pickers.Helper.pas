@@ -10,7 +10,7 @@ unit FMX.Pickers.Helper;
 interface
 
 uses
-  System.Types, FMX.Controls, FMX.Pickers;
+  System.Types, FMX.Controls, FMX.Pickers, FMX.Pickers.Android;
 
 type
   TmyPicker = record

@@ -10,7 +10,8 @@ unit uMain;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  System.SysUtils, System.Types, System.UITypes, System.Classes,
+  System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Objects, FMX.Pickers;
 
@@ -70,7 +71,8 @@ end;
 procedure TForm1.btDateClick(Sender: TObject);
 begin
   TmyPicker.DateFree(FPickerDate);
-  FPickerDate := TmyPicker.DateShow(btDate, StrToDateDef(lbDateValue.Text, now), PickerDateClick);
+  FPickerDate := TmyPicker.DateShow(btDate, StrToDateDef(lbDateValue.Text, now),
+    PickerDateClick);
 end;
 
 procedure TForm1.PickerDateClick(Sender: TObject; const ADateTime: TDateTime);

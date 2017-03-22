@@ -7,7 +7,7 @@
         <DeviceId Condition="'$(Platform)'=='Android'">066ab2310ac64b09</DeviceId>
         <DeviceId Condition="'$(Platform)'=='iOSDevice32'"/>
         <DeviceId Condition="'$(Platform)'=='iOSDevice64'"/>
-        <DeviceId Condition="'$(Platform)'=='iOSSimulator'">D29A8253-CF6D-41CE-A58F-F767A8B1299C</DeviceId>
+        <DeviceId Condition="'$(Platform)'=='iOSSimulator'">iPhone5</DeviceId>
     </PropertyGroup>
     <ItemGroup Condition="'$(Platform)'=='iOSDevice64'"/>
     <ItemGroup Condition="'$(Platform)'=='Win64'"/>
@@ -387,15 +387,6 @@
             <RemoteName>FM_SpotlightSearchIcon_40x40.png</RemoteName>
             <DeployClass>iPhone_Spotlight40</DeployClass>
             <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="iOSSimulator\Debug\prjPickers.rsm" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>prjPickers.app\</RemoteDir>
-            <RemoteName>prjPickers.rsm</RemoteName>
-            <DeployClass>DebugSymbols</DeployClass>
-            <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>

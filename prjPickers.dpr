@@ -4,7 +4,8 @@ uses
   System.StartUpCopy,
   FMX.Forms,
   uMain in 'uMain.pas' {Form1},
-  FMX.Pickers.Helper in 'FMX.Pickers.Helper.pas';
+  FMX.Pickers.Helper in 'FMX.Pickers.Helper.pas',
+  FMX.Pickers.Android in 'FMX.Pickers.Android.pas';
 
 {$R *.res}
 
